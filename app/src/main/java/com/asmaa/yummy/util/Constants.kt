@@ -1,4 +1,4 @@
-package com.asmaa.yummy
+package com.asmaa.yummy.util
 
 class Constants {
 

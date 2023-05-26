@@ -15,4 +15,5 @@
     <string name="ic_favorite">ic_favorite</string>
     <string name="ic_time">ic_time</string>
     <string name="ic_sentiment">ic_sentiment</string>
+    <string name="ic_vagan">ic_vagan</string>
 </resources>

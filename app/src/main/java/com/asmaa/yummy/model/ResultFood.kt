@@ -2,7 +2,7 @@ package com.asmaa.yummy.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Result(
+data class ResultFood(
     @SerializedName("aggregateLikes")
     val aggregateLikes: Int,
 
