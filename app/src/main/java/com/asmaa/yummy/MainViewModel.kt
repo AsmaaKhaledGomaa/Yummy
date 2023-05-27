@@ -17,8 +17,7 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor( private val repositry: Repositry, application: Application
-                                       ):AndroidViewModel(application) {
+class MainViewModel @Inject constructor(private val repositry: Repositry,application: Application):AndroidViewModel(application) {
 
     var recipesResponse: MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
 
