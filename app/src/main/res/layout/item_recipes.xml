@@ -15,8 +15,7 @@
         app:cardCornerRadius="20dp"
         app:strokeColor="@color/lightMediumGray"
         app:strokeWidth="1dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp">
+        android:layout_marginBottom="15dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -25,7 +24,7 @@
             <ImageView
                 android:id="@+id/recipe_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="170dp"
                 android:src="@color/green"
                 android:scaleType="centerCrop"
                 loadImageFromUrl="@{result.image}"
