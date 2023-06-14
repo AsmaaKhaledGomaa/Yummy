@@ -1,4 +1,4 @@
-package com.asmaa.yummy
+package com.asmaa.yummy.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
