@@ -1,6 +1,7 @@
 package com.asmaa.yummy.ui.fragment.recipes
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -39,14 +40,30 @@ class RecipesFragment : Fragment() {
         viewDataBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_recipes,container,false)
 
         setUpRecycleView()
-        requestApiData()
+        readDataBase()
 
         return viewDataBinding.root
     }
 
+    private fun setUpRecycleView(){
+        viewDataBinding.recipeRecycleView.adapter = recipesAdapter
+    }
+    private fun readDataBase() {
+        mainViewModel.readRecipes.observe(viewLifecycleOwner) { dataBase ->
+            if (dataBase.isNotEmpty()) {
+                Log.d("RecipesFragment","ReadData Called!!")
+                recipesAdapter.setData(dataBase[0].foodRecipe)
+            } else {
+                requestApiData()
+            }
+        }
+    }
+
     private fun requestApiData(){
+       Log.d("RecipesFragment","RequestApiData Called!!")
+
        mainViewModel.getRecipes(recipesViewModel.applyQueries())
-        mainViewModel.recipesResponse.observe(viewLifecycleOwner) { response ->
+       mainViewModel.recipesResponse.observe(viewLifecycleOwner) { response ->
 
             when (response) {
                 is NetworkResult.Sucsses -> {
@@ -68,9 +85,4 @@ class RecipesFragment : Fragment() {
             }
         }
     }
-
-    private fun setUpRecycleView(){
-      viewDataBinding.recipeRecycleView.adapter = recipesAdapter
-    }
-
 }
