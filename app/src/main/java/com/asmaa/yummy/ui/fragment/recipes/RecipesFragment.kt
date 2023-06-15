@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.asmaa.yummy.MainViewModel
 import com.asmaa.yummy.R
 import com.asmaa.yummy.adapters.RecipesAdapter
@@ -17,6 +18,7 @@ import com.asmaa.yummy.util.Constants.Companion.API_KEY
 import com.asmaa.yummy.util.NetworkResult
 import com.asmaa.yummy.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
@@ -49,12 +51,14 @@ class RecipesFragment : Fragment() {
         viewDataBinding.recipeRecycleView.adapter = recipesAdapter
     }
     private fun readDataBase() {
-        mainViewModel.readRecipes.observe(viewLifecycleOwner) { dataBase ->
-            if (dataBase.isNotEmpty()) {
-                Log.d("RecipesFragment","ReadData Called!!")
-                recipesAdapter.setData(dataBase[0].foodRecipe)
-            } else {
-                requestApiData()
+        lifecycleScope.launch {
+            mainViewModel.readRecipes.observe(viewLifecycleOwner) { dataBase ->
+                if (dataBase.isNotEmpty()) {
+                    Log.d("RecipesFragment","ReadData Called!!")
+                    recipesAdapter.setData(dataBase[0].foodRecipe)
+                } else {
+                    requestApiData()
+                }
             }
         }
     }
@@ -71,6 +75,7 @@ class RecipesFragment : Fragment() {
                 }
 
                 is NetworkResult.Error -> {
+                    loadDataFromCache()
                     Toast.makeText(
                         requireContext(),
                         response.message.toString(),
@@ -81,6 +86,20 @@ class RecipesFragment : Fragment() {
                         requireContext(),
                         response.message.toString(),
                         Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun loadDataFromCache() {
+
+        lifecycleScope.launch {
+            mainViewModel.readRecipes.observe(viewLifecycleOwner) { dataBase ->
+                if (dataBase.isNotEmpty()) {
+                    Log.d("RecipesFragment","Load Data From Cache !!")
+                    recipesAdapter.setData(dataBase[0].foodRecipe)
+                } else {
+                    requestApiData()
                 }
             }
         }
