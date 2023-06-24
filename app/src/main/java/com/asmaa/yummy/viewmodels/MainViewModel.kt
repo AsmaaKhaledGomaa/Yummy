@@ -1,4 +1,4 @@
-package com.asmaa.yummy
+package com.asmaa.yummy.viewmodels
 
 import android.app.Application
 import android.content.Context

@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="mainviewmodel"
+            type="com.asmaa.yummy.viewmodels.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +14,6 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragment.recipes.RecipesFragment"
         android:background="@color/lightGray">
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recipe_recycleView"
@@ -29,7 +30,7 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/recipes_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -48,8 +49,9 @@
             android:layout_height="100dp"
             android:src="@drawable/ic_sentiment"
             android:alpha="0.5"
-            android:visibility="gone"
             android:contentDescription="@string/errorimage"
+            readApiResponse="@{mainviewmodel.recipesResponse}"
+            readDataBase="@{mainviewmodel.readRecipes}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,11 +61,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/no_internet_conection"
+            readApiResponse2="@{mainviewmodel.recipesResponse}"
+            readDataBase2="@{mainviewmodel.readRecipes}"
             android:textStyle="bold"
             android:alpha="0.5"
             android:textSize="20sp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/error_image_view"
             app:layout_constraintEnd_toEndOf="@id/error_image_view"
             app:layout_constraintTop_toBottomOf="@id/error_image_view" />

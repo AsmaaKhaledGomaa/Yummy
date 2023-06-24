@@ -10,7 +10,11 @@
         android:id="@+id/recipesFragment"
         android:name="com.asmaa.yummy.ui.fragment.recipes.RecipesFragment"
         android:label="Recipes"
-        tools:layout="@layout/fragment_recipes" />
+        tools:layout="@layout/fragment_recipes" >
+        <action
+            android:id="@+id/action_recipesFragment_to_recipesBottomSheetFragment"
+            app:destination="@id/recipesBottomSheetFragment" />
+    </fragment>
     <fragment
         android:id="@+id/favoriteRecipesFragment"
         android:name="com.asmaa.yummy.ui.fragment.favorite.FavoriteRecipesFragment"
@@ -21,4 +25,13 @@
         android:name="com.asmaa.yummy.ui.fragment.foodjoke.FoodJokeFragment"
         android:label="Joke"
         tools:layout="@layout/fragment_food_joke" />
+    <dialog
+        android:id="@+id/recipesBottomSheetFragment"
+        android:name="com.asmaa.yummy.ui.fragment.recipes.bottomsheet.RecipesBottomSheetFragment"
+        android:label="recipes_bottom_sheet"
+        tools:layout="@layout/recipes_bottom_sheet" >
+        <action
+            android:id="@+id/action_recipesBottomSheetFragment_to_recipesFragment"
+            app:destination="@id/recipesFragment" />
+    </dialog>
 </navigation>

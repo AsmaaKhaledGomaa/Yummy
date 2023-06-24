@@ -10,12 +10,13 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.asmaa.yummy.MainViewModel
+import androidx.navigation.fragment.findNavController
+import com.asmaa.yummy.viewmodels.MainViewModel
 import com.asmaa.yummy.R
 import com.asmaa.yummy.adapters.RecipesAdapter
 import com.asmaa.yummy.databinding.FragmentRecipesBinding
-import com.asmaa.yummy.util.Constants.Companion.API_KEY
 import com.asmaa.yummy.util.NetworkResult
+import com.asmaa.yummy.util.observeOnce
 import com.asmaa.yummy.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,8 +24,11 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
 
+    private var _binding: FragmentRecipesBinding?= null
+    private val binding get() = _binding!!
+
     private lateinit var mainViewModel: MainViewModel
-    private lateinit var viewDataBinding: FragmentRecipesBinding
+   // private lateinit var viewDataBinding: FragmentRecipesBinding
     private lateinit var recipesViewModel: RecipesViewModel
     private val recipesAdapter by lazy { RecipesAdapter() }
 
@@ -39,20 +43,26 @@ class RecipesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        viewDataBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_recipes,container,false)
+        _binding = FragmentRecipesBinding.inflate(inflater,container,false)
+        binding.lifecycleOwner = this
+        binding.mainviewmodel = mainViewModel
 
         setUpRecycleView()
         readDataBase()
 
-        return viewDataBinding.root
+        binding.recipesFab.setOnClickListener {
+            findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheetFragment)
+        }
+
+        return binding.root
     }
 
     private fun setUpRecycleView(){
-        viewDataBinding.recipeRecycleView.adapter = recipesAdapter
+        binding.recipeRecycleView.adapter = recipesAdapter
     }
     private fun readDataBase() {
         lifecycleScope.launch {
-            mainViewModel.readRecipes.observe(viewLifecycleOwner) { dataBase ->
+            mainViewModel.readRecipes.observeOnce(viewLifecycleOwner) { dataBase ->
                 if (dataBase.isNotEmpty()) {
                     Log.d("RecipesFragment","ReadData Called!!")
                     recipesAdapter.setData(dataBase[0].foodRecipe)
@@ -103,5 +113,10 @@ class RecipesFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
