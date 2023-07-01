@@ -22,14 +22,13 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-class DataStoreRepositry @Inject constructor(@ApplicationContext  private val context: Context){
+class DataStoreRepositry @Inject constructor(@ApplicationContext private val context: Context){
 
     private object PreferenceKeys {
         val selectedMealType = preferencesKey<String>(PREFERENCES_MEAL_TYPE)
         val selectedMealTypeId = preferencesKey<Int>(PREFERENCES_MEAL_TYPE_ID)
         val selectedDietType = preferencesKey<String>(PREFERENCES_DIET_TYPE)
         val selectedDietTypeId = preferencesKey<Int>(PREFERENCES_DIET_TYPE_ID)
-        val backOnline = preferencesKey<Boolean>(PREFERENCES_BACK_ONLINE)
     }
 
     private val dataStore: DataStore<Preferences> = context.createDataStore(
@@ -47,12 +46,6 @@ class DataStoreRepositry @Inject constructor(@ApplicationContext  private val co
             preferences[PreferenceKeys.selectedMealTypeId] = mealTypeId
             preferences[PreferenceKeys.selectedDietType] = dietType
             preferences[PreferenceKeys.selectedDietTypeId] = dietTypeId
-        }
-    }
-
-    suspend fun saveBackOnline(backOnline: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PreferenceKeys.backOnline] = backOnline
         }
     }
 
@@ -76,25 +69,11 @@ class DataStoreRepositry @Inject constructor(@ApplicationContext  private val co
                 selectedDietTypeId
             )
         }
-
-    val readBackOnline: Flow<Boolean> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }
-        .map {preferences ->
-            val backOnline = preferences[PreferenceKeys.backOnline] ?: false
-            backOnline
-        }
-
 }
 
-data class MealAndDietType(
-    val selectedMealType: String,
-    val selectedMealTypeId: Int,
-    val selectedDietType: String,
-    val selectedDietTypeId: Int
-)
+    data class MealAndDietType(
+        val selectedMealType: String,
+        val selectedMealTypeId: Int,
+        val selectedDietType: String,
+        val selectedDietTypeId: Int
+    )
