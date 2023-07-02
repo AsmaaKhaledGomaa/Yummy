@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.get
+import androidx.navigation.fragment.findNavController
 import com.asmaa.yummy.R
 import com.asmaa.yummy.databinding.FragmentRecipesBinding
 import com.asmaa.yummy.databinding.RecipesBottomSheetBinding
@@ -66,6 +67,9 @@ class RecipesBottomSheetFragment : BottomSheetDialogFragment(){
 
         binding.applyBtn.setOnClickListener{
             recipesViewModel.saveMealAndDietType(mealTypeChip,mealTypeChipId,dietTypeChip,dietTypeChipId)
+
+            val action = RecipesBottomSheetFragmentDirections.actionRecipesBottomSheetFragmentToRecipesFragment(true)
+            findNavController().navigate(action)
         }
 
         return binding.root

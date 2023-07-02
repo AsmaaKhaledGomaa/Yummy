@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.asmaa.yummy.viewmodels.MainViewModel
 import com.asmaa.yummy.R
 import com.asmaa.yummy.adapters.RecipesAdapter
@@ -23,6 +24,8 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
+
+    private val args by navArgs<RecipesFragmentArgs>()
 
     private var _binding: FragmentRecipesBinding?= null
     private val binding get() = _binding!!
@@ -63,7 +66,7 @@ class RecipesFragment : Fragment() {
     private fun readDataBase() {
         lifecycleScope.launch {
             mainViewModel.readRecipes.observeOnce(viewLifecycleOwner) { dataBase ->
-                if (dataBase.isNotEmpty()) {
+                if (dataBase.isNotEmpty() && !args.backFromBottomSheet) {
                     Log.d("RecipesFragment","ReadData Called!!")
                     recipesAdapter.setData(dataBase[0].foodRecipe)
                 } else {
