@@ -16,13 +16,16 @@ import com.asmaa.yummy.viewmodels.MainViewModel
 import com.asmaa.yummy.R
 import com.asmaa.yummy.adapters.RecipesAdapter
 import com.asmaa.yummy.databinding.FragmentRecipesBinding
+import com.asmaa.yummy.util.NetworkListener
 import com.asmaa.yummy.util.NetworkResult
 import com.asmaa.yummy.util.observeOnce
 import com.asmaa.yummy.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class RecipesFragment : Fragment() {
 
     private val args by navArgs<RecipesFragmentArgs>()
@@ -34,6 +37,8 @@ class RecipesFragment : Fragment() {
    // private lateinit var viewDataBinding: FragmentRecipesBinding
     private lateinit var recipesViewModel: RecipesViewModel
     private val recipesAdapter by lazy { RecipesAdapter() }
+
+    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +57,13 @@ class RecipesFragment : Fragment() {
 
         setUpRecycleView()
         readDataBase()
+
+        lifecycleScope.launch {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext()).collect{ status->
+                Log.d("Network Listener",status.toString())
+            }
+        }
 
         binding.recipesFab.setOnClickListener {
             findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheetFragment)
