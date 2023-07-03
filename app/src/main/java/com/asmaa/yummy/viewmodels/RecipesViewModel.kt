@@ -3,6 +3,7 @@ package com.asmaa.yummy.viewmodels
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.asmaa.yummy.data.network.DataStoreRepositry
 import com.asmaa.yummy.util.Constants
@@ -19,6 +20,7 @@ import com.asmaa.yummy.util.Constants.Companion.QUERY_TYPE
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,13 +31,21 @@ class RecipesViewModel @Inject constructor(application: Application, private val
     private var dietType = DEFAULT_DIET_TYPE
 
     var networkStatus = false
+    var backOnline = false
 
     val readMealAndDietType = dataStoreRepository.readMealAndDietType
+    val readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
     fun saveMealAndDietType(mealType: String, mealTypeId: Int, dietType: String, dietTypeId: Int) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveMealAndDietType(mealType, mealTypeId, dietType, dietTypeId)
         }
+
+    fun saveBackOnline(backOnline: Boolean){
+        viewModelScope.launch(Dispatchers.IO){
+            dataStoreRepository.saveBackOnline(backOnline)
+        }
+    }
 
     fun applyQueries(): HashMap<String, String> {
         val queries: HashMap<String, String> = HashMap()
@@ -57,9 +67,16 @@ class RecipesViewModel @Inject constructor(application: Application, private val
         return queries
     }
 
-    fun showNetworkStatus(){
-        if(!networkStatus){
-            Toast.makeText(getApplication(),"No InternetConnection",Toast.LENGTH_SHORT).show()
+    fun showNetworkStatus() {
+        if (!networkStatus) {
+            Toast.makeText(getApplication(), "No Internet Connection.", Toast.LENGTH_SHORT).show()
+            saveBackOnline(true)
+        } else if (networkStatus) {
+            if (backOnline) {
+                Toast.makeText(getApplication(), "We're back online.", Toast.LENGTH_SHORT).show()
+                saveBackOnline(false)
+            }
         }
     }
+
 }

@@ -34,10 +34,8 @@ class RecipesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var mainViewModel: MainViewModel
-   // private lateinit var viewDataBinding: FragmentRecipesBinding
     private lateinit var recipesViewModel: RecipesViewModel
     private val recipesAdapter by lazy { RecipesAdapter() }
-
     private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +53,12 @@ class RecipesFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.mainviewmodel = mainViewModel
 
+        setHasOptionsMenu(true)
         setUpRecycleView()
-        readDataBase()
+
+        recipesViewModel.readBackOnline.observe(viewLifecycleOwner,{
+            recipesViewModel.backOnline = it
+        })
 
         lifecycleScope.launch {
             networkListener = NetworkListener()
@@ -65,6 +67,7 @@ class RecipesFragment : Fragment() {
 
                 recipesViewModel.networkStatus = status
                 recipesViewModel.showNetworkStatus()
+                readDataBase()
             }
         }
 
@@ -82,6 +85,9 @@ class RecipesFragment : Fragment() {
     private fun setUpRecycleView(){
         binding.recipeRecycleView.adapter = recipesAdapter
     }
+
+
+
     private fun readDataBase() {
         lifecycleScope.launch {
             mainViewModel.readRecipes.observeOnce(viewLifecycleOwner) { dataBase ->
