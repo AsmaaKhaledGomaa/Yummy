@@ -62,11 +62,18 @@ class RecipesFragment : Fragment() {
             networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(requireContext()).collect{ status->
                 Log.d("Network Listener",status.toString())
+
+                recipesViewModel.networkStatus = status
+                recipesViewModel.showNetworkStatus()
             }
         }
 
         binding.recipesFab.setOnClickListener {
-            findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheetFragment)
+            if (recipesViewModel.networkStatus){
+                findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheetFragment)
+            } else{
+                recipesViewModel.showNetworkStatus()
+            }
         }
 
         return binding.root

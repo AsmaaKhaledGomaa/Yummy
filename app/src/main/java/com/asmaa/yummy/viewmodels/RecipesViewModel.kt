@@ -1,6 +1,7 @@
 package com.asmaa.yummy.viewmodels
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.asmaa.yummy.data.network.DataStoreRepositry
@@ -26,6 +27,8 @@ class RecipesViewModel @Inject constructor(application: Application, private val
 
     private var mealType = DEFAULT_MEAL_TYPE
     private var dietType = DEFAULT_DIET_TYPE
+
+    var networkStatus = false
 
     val readMealAndDietType = dataStoreRepository.readMealAndDietType
 
@@ -54,4 +57,9 @@ class RecipesViewModel @Inject constructor(application: Application, private val
         return queries
     }
 
+    fun showNetworkStatus(){
+        if(!networkStatus){
+            Toast.makeText(getApplication(),"No InternetConnection",Toast.LENGTH_SHORT).show()
+        }
+    }
 }
