@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.databinding.DataBindingUtil
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -26,7 +28,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 @ExperimentalCoroutinesApi
-class RecipesFragment : Fragment() {
+class RecipesFragment : Fragment() , SearchView.OnQueryTextListener {
 
     private val args by navArgs<RecipesFragmentArgs>()
 
@@ -56,9 +58,9 @@ class RecipesFragment : Fragment() {
         setHasOptionsMenu(true)
         setUpRecycleView()
 
-        recipesViewModel.readBackOnline.observe(viewLifecycleOwner,{
+        recipesViewModel.readBackOnline.observe(viewLifecycleOwner) {
             recipesViewModel.backOnline = it
-        })
+        }
 
         lifecycleScope.launch {
             networkListener = NetworkListener()
@@ -78,7 +80,6 @@ class RecipesFragment : Fragment() {
                 recipesViewModel.showNetworkStatus()
             }
         }
-
         return binding.root
     }
 
@@ -86,7 +87,22 @@ class RecipesFragment : Fragment() {
         binding.recipeRecycleView.adapter = recipesAdapter
     }
 
-
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.recipes_menu,menu)
+        val search = menu.findItem(R.id.menu_search)
+        val searchView = search.actionView as? SearchView
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.setOnQueryTextListener(this)
+    }
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null){
+            searchApiData(query)
+        }
+        return true
+    }
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
+    }
 
     private fun readDataBase() {
         lifecycleScope.launch {
@@ -129,8 +145,26 @@ class RecipesFragment : Fragment() {
         }
     }
 
-    private fun loadDataFromCache() {
+    private fun searchApiData(searchQuery: String){
+        mainViewModel.searchRecipes(recipesViewModel.applySearchQuery(searchQuery))
+        mainViewModel.searchRecipesResponse.observe(viewLifecycleOwner){ response ->
+            when(response){
+                is NetworkResult.Sucsses ->{
+                    val foodRecipe = response.data
+                    foodRecipe?.let { recipesAdapter.setData(it) }
+                }
+                is NetworkResult.Error ->{
+                    loadDataFromCache()
+                    Toast.makeText(requireContext(),response.message.toString(),Toast.LENGTH_LONG).show()
+                }
+                is NetworkResult.Loading ->{
+                    Toast.makeText(requireContext(),response.message.toString(),Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
+    private fun loadDataFromCache() {
         lifecycleScope.launch {
             mainViewModel.readRecipes.observe(viewLifecycleOwner) { dataBase ->
                 if (dataBase.isNotEmpty()) {

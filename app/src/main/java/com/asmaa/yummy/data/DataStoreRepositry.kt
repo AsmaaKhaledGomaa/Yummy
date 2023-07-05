@@ -1,4 +1,4 @@
-package com.asmaa.yummy.data.network
+package com.asmaa.yummy.data
 
 import android.content.Context
 import androidx.datastore.DataStore
