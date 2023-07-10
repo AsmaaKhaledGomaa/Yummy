@@ -1,7 +1,11 @@
 package com.asmaa.yummy.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
+@Parcelize
 data class ResultFood(
     @SerializedName("aggregateLikes")
     val aggregateLikes: Int,
@@ -13,7 +17,7 @@ data class ResultFood(
     val dairyFree: Boolean,
 
     @SerializedName("extendedIngredients")
-    val extendedIngredients: List<ExtendedIngredient>,
+    val extendedIngredients:@RawValue List<ExtendedIngredient>,
 
     @SerializedName("glutenFree")
     val glutenFree: Boolean,
@@ -47,4 +51,4 @@ data class ResultFood(
 
     @SerializedName("veryHealthy")
     val veryHealthy: Boolean,
-)
+):Parcelable
