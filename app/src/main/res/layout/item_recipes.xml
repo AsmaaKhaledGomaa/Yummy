@@ -14,7 +14,8 @@
         app:cardCornerRadius="20dp"
         app:strokeColor="@color/lightMediumGray"
         app:strokeWidth="1dp"
-        android:layout_marginBottom="15dp">
+        android:layout_marginBottom="15dp"
+        onRecipeClickListener="@{result}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

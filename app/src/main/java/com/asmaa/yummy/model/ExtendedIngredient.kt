@@ -1,8 +1,11 @@
 package com.asmaa.yummy.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ExtendedIngredient(
     @SerializedName("amount")
     val amount: Double,
@@ -21,4 +24,4 @@ data class ExtendedIngredient(
 
     @SerializedName("unit")
     val unit: String
-)
+): Parcelable

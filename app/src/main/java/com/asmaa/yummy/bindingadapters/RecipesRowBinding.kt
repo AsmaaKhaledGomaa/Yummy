@@ -12,13 +12,15 @@ import coil.load
 import com.asmaa.yummy.R
 import com.asmaa.yummy.model.ResultFood
 import com.asmaa.yummy.ui.fragment.recipes.RecipesFragmentDirections
+import com.google.android.material.card.MaterialCardView
 import java.lang.Exception
 
 class RecipesRowBinding {
     companion object{
         @BindingAdapter("onRecipeClickListener")
         @JvmStatic
-        fun onRecipeClickListener(recipeRowLayout: ConstraintLayout , result: ResultFood){
+        fun onRecipeClickListener(recipeRowLayout: MaterialCardView, result: ResultFood){
+            Log.d("onRecipeClickListener", "Called")
             recipeRowLayout.setOnClickListener {
                 try {
                     val action = RecipesFragmentDirections.actionRecipesFragmentToDetailsActivity(result)
