@@ -46,4 +46,8 @@
     <string name="apply">Apply</string>
     <string name="search">search</string>
     <string name="tabdetails" />
+    <string name="dairy_free">Dairy Free</string>
+    <string name="healthy">Healthy</string>
+    <string name="cheap">Cheap</string>
+
 </resources>
