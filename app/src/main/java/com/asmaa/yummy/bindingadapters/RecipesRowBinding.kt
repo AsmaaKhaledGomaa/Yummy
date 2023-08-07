@@ -13,6 +13,7 @@ import com.asmaa.yummy.R
 import com.asmaa.yummy.model.ResultFood
 import com.asmaa.yummy.ui.fragment.recipes.RecipesFragmentDirections
 import com.google.android.material.card.MaterialCardView
+import org.jsoup.Jsoup
 import java.lang.Exception
 
 class RecipesRowBinding {
@@ -65,5 +66,15 @@ class RecipesRowBinding {
                 }
             }
         }
+
+    @BindingAdapter("parseHtml")
+    @JvmStatic
+    fun parseHtml(textView: TextView, description: String?){
+        if(description != null) {
+            val desc = Jsoup.parse(description).text()
+            textView.text = desc
+        }
     }
+
+}
 }
